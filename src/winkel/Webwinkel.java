@@ -17,7 +17,7 @@ public class Webwinkel {
     private ArrayList<Product> producten = new ArrayList<>();
     private Scanner input = new Scanner(System.in);
 
-    public Webwinkel() {
+    private Webwinkel() {
         producten.add(new DefaultProduct("Melk", 100, 100, Eenheid.PAK));
         producten.add(new DefaultProduct("Brood", 200, 10, Eenheid.STUK));
         producten.add(new Aanbieding("Auto", 100000, 10, 2, Eenheid.STUK));
@@ -32,7 +32,7 @@ public class Webwinkel {
         }
     }
 
-    void printPrijzenBTW(boolean btw) {
+    private void printPrijzenBTW(boolean btw) {
         for (int i=0; i<producten.size(); i++) {
             if (producten.get(i).getVoorraad()>0) {
                 System.out.println((i+1) + ") " + producten.get(i).printInfo(btw));
@@ -109,7 +109,7 @@ public class Webwinkel {
         System.out.println("d productnummer ............... verwijder bestelling uit winkelwagen");
         System.out.println("v productnummer hoeveelheid ... verander hoeveelheid bestelling");
         System.out.println("r ............................. verwijder alle bestellingen");
-        System.out.println("btw boolean ..................... set BTW betaling");
+        System.out.println("btw boolean ................... set BTW betaling");
         System.out.println("h ............................. hulp menu");
         System.out.println("x ............................. exit programma");
     }
