@@ -1,7 +1,11 @@
 package product;
 
-public class Voedingsmiddel extends Product {
+import bestelling.IBezorgbaar;
 
+public class Voedingsmiddel extends Product implements IBezorgbaar {
+
+	Bezorging bezorging;
+	
 	public Voedingsmiddel(String naam, int prijs, int voorraad, Eenheid eenheid) {
 		super(naam, prijs, voorraad, eenheid);
 		this.btw = 6;
@@ -30,6 +34,16 @@ public class Voedingsmiddel extends Product {
 	@Override
 	public int getVoorraad() {
 		return voorraad;
+	}
+
+	@Override
+	public Bezorging getBezorging() {
+		return bezorging;
+	}
+
+	@Override
+	public void setBezorging(Bezorging b) {
+		this.bezorging = b;		
 	}
 
 }

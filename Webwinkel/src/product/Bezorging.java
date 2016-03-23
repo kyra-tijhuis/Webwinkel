@@ -18,7 +18,6 @@ public class Bezorging extends Product {
 
 	@Override
 	public int getBTWPercentage() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

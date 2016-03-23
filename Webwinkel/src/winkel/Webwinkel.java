@@ -1,6 +1,7 @@
 package winkel;
 
 import bestelling.Winkelwagen;
+import product.Bezorging;
 import product.DefaultProduct;
 import product.Eenheid;
 import product.Aanbieding;
@@ -23,6 +24,8 @@ public class Webwinkel {
         producten.add(new Voedingsmiddel("Brood", 200, 10, Eenheid.STUK));
         producten.add(new DefaultProduct("Auto", 100000, 10, Eenheid.STUK));
         producten.add(new Aanbieding("Kaas", 500, 10, 5000, Eenheid.KILO));
+        producten.add(new Bezorging("PostNL",195));
+        producten.add(new Bezorging("Dezelfde dag", 495));
     }
 
     void printAssortiment() {
@@ -78,6 +81,12 @@ public class Webwinkel {
                     case "b":
                         commandoB(winkelwagen, cmd2, cmd3);
                         break;
+                    case "bezorg":
+                    	commandoBezorg(winkelwagen);
+                    	break;
+                    case "bestel":
+                    	commandoBestel(winkelwagen);
+                    	break;
                     case "w":
                         winkelwagen.displayWinkelwagen();
                         break;
@@ -107,6 +116,8 @@ public class Webwinkel {
         System.out.println("a ............................. display assortiment");
         System.out.println("b productnummer hoeveelheid ... voeg bestelling toe aan winkelwagen");
         System.out.println("w ............................. display winkelwagen");
+        System.out.println("bezorg ........................ kies bezorging");
+        System.out.println("bestel ........................ plaats bestelling");
         System.out.println("d productnummer ............... verwijder bestelling uit winkelwagen");
         System.out.println("v productnummer hoeveelheid ... verander hoeveelheid bestelling");
         System.out.println("r ............................. verwijder alle bestellingen");
@@ -115,6 +126,14 @@ public class Webwinkel {
         System.out.println("x ............................. exit programma");
     }
 
+    private void commandoBezorg(Winkelwagen winkelwagen) {
+    	
+    }
+    
+    private void commandoBestel(Winkelwagen winkelwagen) {
+    	
+    }
+    
     private void commandoD(Winkelwagen winkelwagen, String cmd2) {
         Integer product = Integer.parseInt(cmd2);
         if (product>0) {

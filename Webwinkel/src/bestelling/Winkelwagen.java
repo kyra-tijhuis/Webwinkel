@@ -109,6 +109,10 @@ public class Winkelwagen {
             return veranderBestelling(bestelling.get(index-1).getProduct(), hoeveelheid);
         }
     }
+    
+    public void bestelWinkelwagen() {
+    	
+    }
 
     public void displayWinkelwagen() {
     	System.out.println("Product                         Aantal     Prijs      BTW");
