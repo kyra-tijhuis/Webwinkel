@@ -1,5 +1,6 @@
 package winkel;
 
+import bestelling.IBezorgbaar;
 import bestelling.Winkelwagen;
 import product.Bezorging;
 import product.DefaultProduct;
@@ -17,6 +18,7 @@ import java.util.Scanner;
 public class Webwinkel {
 
     private ArrayList<Product> producten = new ArrayList<>();
+    private ArrayList<Bezorging> bezorgen = new ArrayList<>();
     private Scanner input = new Scanner(System.in);
 
     private Webwinkel() {
@@ -24,15 +26,18 @@ public class Webwinkel {
         producten.add(new Voedingsmiddel("Brood", 200, 10, Eenheid.STUK));
         producten.add(new DefaultProduct("Auto", 100000, 10, Eenheid.STUK));
         producten.add(new Aanbieding("Kaas", 500, 10, 5000, Eenheid.KILO));
-        producten.add(new Bezorging("PostNL",195));
-        producten.add(new Bezorging("Dezelfde dag", 495));
+        producten.add(new Bezorging("Morgen",195));
+        producten.add(new Bezorging("Vandaag", 495));
+        for (Product p : producten) {
+            if (p instanceof Bezorging) {
+                bezorgen.add((Bezorging) p);
+            }
+        }
     }
 
-    void printAssortiment() {
-        for (int i=0; i<producten.size(); i++) {
-            if (producten.get(i).getVoorraad()>0) {
-                System.out.println((i+1) + ") " + producten.get(i).toString());
-            }
+    void printBezorging() {
+        for (int i=0; i<bezorgen.size(); i++) {
+            System.out.println((i+1) + ") " + bezorgen.get(i).toString());
         }
     }
 
@@ -46,7 +51,7 @@ public class Webwinkel {
 
     private void run() {
         final Winkelwagen winkelwagen;
-        String invoer = "", cmd2 = "", cmd3 = "";
+        String invoer = "";
 
         System.out.println("Welkom bij de webwinkel");
         System.out.println("Moet u bij uw bestelling BTW betalen? (j/n)");
@@ -65,6 +70,7 @@ public class Webwinkel {
             Scanner s = new Scanner(invoer);
             if (s.hasNext()) {
                 String cmd1 = s.next();
+                String cmd2 = "", cmd3 = "";
                 if (s.hasNext()) {
                     cmd2 = s.next();
                     if (s.hasNext()){
@@ -82,7 +88,11 @@ public class Webwinkel {
                         commandoB(winkelwagen, cmd2, cmd3);
                         break;
                     case "bezorg":
-                    	commandoBezorg(winkelwagen);
+                        if (cmd2!="") {
+                            commandoBezorg(winkelwagen, cmd2);
+                        } else {
+                            printBezorging();
+                        }
                     	break;
                     case "bestel":
                     	commandoBestel(winkelwagen);
@@ -108,6 +118,7 @@ public class Webwinkel {
                         printHelp();
                         break;
                 }
+
             }
         }
     }
@@ -126,8 +137,13 @@ public class Webwinkel {
         System.out.println("x ............................. exit programma");
     }
 
-    private void commandoBezorg(Winkelwagen winkelwagen) {
-    	
+    private void commandoBezorg(Winkelwagen winkelwagen, String cmd2) {
+        Integer getal = Integer.parseInt(cmd2);
+        if (getal>0 && getal<=bezorgen.size()) {
+            winkelwagen.bezorgWinkelwagen(bezorgen.get(getal-1));
+        } else {
+            System.out.println("Het commando bezorg moet gevolgd worden door een getal tussen de 1 en " + bezorgen.size());
+        }
     }
     
     private void commandoBestel(Winkelwagen winkelwagen) {
@@ -162,15 +178,21 @@ public class Webwinkel {
     }
 
     private void commandoB(Winkelwagen winkelwagen, String cmd2, String cmd3) {
-        Integer product = Integer.parseInt(cmd2);
-        Integer hoeveelheid = Integer.parseInt(cmd3);
-        if (product==null || product < 1) {
-            System.out.println("Product moet worden aangeduid met een positief getal");
-        } else if (hoeveelheid==null || hoeveelheid < 0) {
-            System.out.println("Hoeveeheid moet worden aangeduid met een positief getal");
-        } else {
-            winkelwagen.bestel(producten.get(product-1), hoeveelheid);
+        try {
+            Integer product = Integer.parseInt(cmd2);
+            Integer hoeveelheid = Integer.parseInt(cmd3);
+            if (product==null || product < 1) {
+                System.out.println("Product moet worden aangeduid met een positief getal");
+            } else if (hoeveelheid==null || hoeveelheid < 0) {
+                System.out.println("Hoeveeheid moet worden aangeduid met een positief getal");
+            } else {
+                winkelwagen.bestel(producten.get(product-1), hoeveelheid);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Het commando b moet worden gevolgd voor twee getallen");
         }
+
+
     }
 
     public static void main(String[] args) {

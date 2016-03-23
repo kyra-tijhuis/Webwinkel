@@ -1,21 +1,20 @@
 package product;
 
+import bestelling.IBezorgbaar;
+
 /**
  * Created by Kyra on 19/03/2016.
  */
 public abstract class Product {
 
-    protected String naam;
-    protected int prijs;
-    protected Eenheid eenheid;
     protected int btw;
     protected int voorraad;
 
     protected Product(String naam, int prijs, int voorraad, Eenheid eenheid) {
-        this.naam = naam;
-        this.prijs = prijs;
+        this.setNaam(naam);
+        this.setPrijsPerEenheid(prijs);
         this.voorraad = voorraad;
-        this.eenheid = eenheid;
+        this.setEenheid(eenheid);
     }
 
     protected Product(String naam, int prijs, int voorraad) {
@@ -28,7 +27,11 @@ public abstract class Product {
 
     public abstract String getNaam();
 
+    public abstract void setNaam(String naam);
+
     public abstract int getPrijsPerEenheid();
+
+    public abstract void setPrijsPerEenheid(int prijs);
 
     public int getPrijs() {
         return getPrijsPerEenheid();
@@ -54,9 +57,11 @@ public abstract class Product {
 
     public abstract Eenheid getEenheid();
 
+    protected abstract void setEenheid(Eenheid eenheid);
+
     public abstract int getVoorraad();
 
-    public final void setVoorraad(int voorraad) throws NegatieveVoorraadException {
+    public final void setVoorraad(int voorraad) {
         if (voorraad<0) {
             throw new NegatieveVoorraadException("Geen negatieve voorraad mogelijk");
         } else {
@@ -64,7 +69,7 @@ public abstract class Product {
         }
     }
 
-    public void haalUitVoorraad(int aantal) throws NegatieveVoorraadException {
+    public void haalUitVoorraad(int aantal) {
         setVoorraad(getVoorraad() - aantal);
     }
 

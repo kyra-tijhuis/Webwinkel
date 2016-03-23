@@ -4,7 +4,10 @@ import bestelling.IBezorgbaar;
 
 public class Voedingsmiddel extends Product implements IBezorgbaar {
 
-	Bezorging bezorging;
+	private String naam;
+	private int prijs;
+	private Eenheid eenheid;
+	private Bezorging bezorging;
 	
 	public Voedingsmiddel(String naam, int prijs, int voorraad, Eenheid eenheid) {
 		super(naam, prijs, voorraad, eenheid);
@@ -17,8 +20,18 @@ public class Voedingsmiddel extends Product implements IBezorgbaar {
 	}
 
 	@Override
+	public void setNaam(String naam) {
+		this.naam = naam;
+	}
+
+	@Override
 	public int getPrijsPerEenheid() {
 		return prijs;
+	}
+
+	@Override
+	public void setPrijsPerEenheid(int prijs) {
+		this.prijs = prijs;
 	}
 
 	@Override
@@ -29,6 +42,11 @@ public class Voedingsmiddel extends Product implements IBezorgbaar {
 	@Override
 	public Eenheid getEenheid() {
 		return eenheid;
+	}
+
+	@Override
+	protected void setEenheid(Eenheid eenheid) {
+		this.eenheid = eenheid;
 	}
 
 	@Override

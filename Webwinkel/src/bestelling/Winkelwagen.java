@@ -1,5 +1,6 @@
 package bestelling;
 
+import product.Bezorging;
 import product.NegatieveVoorraadException;
 import product.Product;
 
@@ -10,11 +11,12 @@ import java.util.ArrayList;
  */
 public class Winkelwagen {
 
-    private ArrayList<ProductBestelling> bestelling;
+    private ArrayList<ProductBestelling> bestelling = new ArrayList<>();
     private boolean btw = true;
+    private boolean bezorgbaar;
+    private Bezorging bezorging;
 
     public Winkelwagen(boolean btw) {
-        bestelling = new ArrayList<>();
         this.btw = btw;
     }
 
@@ -24,7 +26,6 @@ public class Winkelwagen {
 
     public void setBTW(boolean btwInclusief) {
         this.btw = btwInclusief;
-        // TODO recalc prices
     }
 
     public void resetWinkelwagen() {
@@ -42,7 +43,7 @@ public class Winkelwagen {
     public void bestel(Product p, int hoeveelheid) {
         ProductBestelling productBestelling = null;
         for (ProductBestelling pb : bestelling) {
-            if (pb.getProduct().equals(p)) {
+            if (pb.productEquals(p)) {
                 productBestelling = pb;
             }
         }
@@ -55,58 +56,51 @@ public class Winkelwagen {
                 e.printStackTrace();
             }
         } else {
-            veranderBestelling(p, hoeveelheid + productBestelling.getHoeveelheid());
+            productBestelling.veranderBestelling(hoeveelheid + productBestelling.getHoeveelheid());
+            displayWinkelwagen();
         }
-    }
-
-    public boolean verwijderBestelling(Product p) {
-        ProductBestelling teVerwijderen = null;
-        for (ProductBestelling pb : bestelling) {
-            if (pb.getProduct().equals(p)) {
-                Product product = pb.getProduct();
-                try {
-                    product.setVoorraad(product.getVoorraad() + pb.getHoeveelheid());
-                    teVerwijderen = pb;
-                } catch (NegatieveVoorraadException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        bestelling.remove(bestelling.indexOf(teVerwijderen));
-        return !(teVerwijderen==null);
     }
 
     public boolean verwijderBestelling(int index) {
         if (index>bestelling.size()) {
             return false;
         } else {
-            return verwijderBestelling(bestelling.get(index-1).getProduct());
+            ProductBestelling teVerwijderen = bestelling.get(index-1);
+            teVerwijderen.veranderBestelling(0);
+            bestelling.remove(index-1);
+            displayWinkelwagen();
+            return true;
         }
-    }
-
-    public boolean veranderBestelling(Product p, int hoeveelheid) {
-        boolean result = false;
-        for (ProductBestelling pb : bestelling) {
-            if (pb.getProduct().equals(p)) {
-                result = true;
-                Product product = pb.getProduct();
-                try {
-                    product.setVoorraad(product.getVoorraad() + pb.getHoeveelheid());
-                    pb.setHoeveelheid(hoeveelheid);
-                    product.haalUitVoorraad(hoeveelheid);
-                } catch (NegatieveVoorraadException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return result;
     }
 
     public boolean veranderBestelling(int index, int hoeveelheid) {
         if (index>bestelling.size()) {
             return false;
         } else {
-            return veranderBestelling(bestelling.get(index-1).getProduct(), hoeveelheid);
+            bestelling.get(index-1).veranderBestelling(hoeveelheid);
+            displayWinkelwagen();
+            return true;
+        }
+    }
+    
+    public void bezorgWinkelwagen(Bezorging bezorging) {
+        this.bezorging = bezorging;
+        int counter = 0;
+        boolean teBezorgen = false;
+    	for (ProductBestelling pb : bestelling) {
+            pb.setBezorging(bezorging);
+            if (pb.getBezorging()!=null) {
+                teBezorgen = true;
+                counter++;
+            }
+    	}
+        if (teBezorgen) {
+            bezorgbaar = true;
+            System.out.println(counter + " producten die " + bezorging.getNaam() + " bezorgd worden");
+            System.out.println((bestelling.size()-counter) + " producten die niet bezorgd kunnen worden");
+        } else {
+            bezorgbaar = false;
+            System.out.println("Geen producten in de winkelwagen die bezorgd kunnen worden");
         }
     }
     
@@ -115,8 +109,8 @@ public class Winkelwagen {
     }
 
     public void displayWinkelwagen() {
-    	System.out.println("Product                         Aantal     Prijs      BTW");
-    	System.out.println("---------------------------------------------------------");
+    	System.out.println("Product                         Aantal     Prijs      BTW   Totaalprijs");
+    	System.out.println("-----------------------------------------------------------------------");
         int index = 1;
         int btwTotaal = 0;
         int btwBedrag = 0;
@@ -125,14 +119,19 @@ public class Winkelwagen {
             	if (btw) {
             		btwBedrag = pb.getBTWBedrag();
             	}            	
-                System.out.printf("%3d  %s %8d %n", index, pb.toString(), btwBedrag);
+                System.out.printf("%3d  %s %8d %13d%n", index, pb.toString(), btwBedrag, pb.getPrijs(btw));
                 index++;
                 btwTotaal += btwBedrag;
             }
-            System.out.println("---------------------------------------------------------");
+            System.out.println("-----------------------------------------------------------------------");
             int prijs = getTotaalPrijs(false);
-            System.out.printf("Subtotalen                              %8d %8d%n", prijs, btwTotaal);
-            System.out.printf("Totaal                                           %8d%n", prijs+btwTotaal);
+            System.out.printf("Subtotalen                              %8d %8d %13d%n", prijs, btwTotaal, prijs+btwTotaal);
+            int totaalprijs = prijs+btwTotaal;
+            if (bezorgbaar) {
+                totaalprijs += bezorging.getPrijsPerEenheid();
+                System.out.printf("Bezorging: %-51s %8d%n", bezorging.getNaam(),bezorging.getPrijsPerEenheid());
+            }
+            System.out.printf("Totaal                                                         %8d%n", totaalprijs);
         } else {
             System.out.println("Winkelwagen is leeg");
         }
