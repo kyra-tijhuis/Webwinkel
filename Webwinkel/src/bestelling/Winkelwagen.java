@@ -126,7 +126,9 @@ public class Winkelwagen {
                 btwTotaal += btwBedrag;
             }
             System.out.println("---------------------------------------------------------");
-            System.out.printf("Subtotalen                              %8d %8d", getTotaalPrijs(false), btwTotaal);
+            int prijs = getTotaalPrijs(false);
+            System.out.printf("Subtotalen                              %8d %8d%n", prijs, btwTotaal);
+            System.out.printf("Totaal                                           %8d%n", prijs+btwTotaal);
         } else {
             System.out.println("Winkelwagen is leeg");
         }

@@ -3,7 +3,7 @@ package product;
 public class Bezorging extends Product {
 	
 	public Bezorging(String naam, int prijs) {
-		super(naam, prijs, 1000000);
+		super(naam, prijs, 0);
 	}
 
 	@Override
